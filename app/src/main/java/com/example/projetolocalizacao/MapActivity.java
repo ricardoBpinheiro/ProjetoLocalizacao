@@ -2,10 +2,14 @@ package com.example.projetolocalizacao;
 
 import android.Manifest;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,9 +22,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,19 +30,24 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.HashMap;
-import java.util.List;
-
 import static android.provider.SettingsSlicesContract.KEY_LOCATION;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    private LocationManager locationManager;
+    private Location location;
+
+    private Button btnMarcarBuraco;
+    private Button btnMarcarRadar;
+
+    private double latitude = 0d;
+    private double longitude = 0d;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -56,9 +63,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
+
             mMap.setMyLocationEnabled(true);
-            addMakerHole();
+
+            //add permission for location - Manifest
+            Criteria criteria = new Criteria();
+            try {
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                location = locationManager.getLastKnownLocation(locationManager
+                        .getBestProvider(criteria, false));
+            } catch (SecurityException e) {
+                Toast.makeText(getApplicationContext(), "Sem permissão de Localização!", Toast.LENGTH_LONG);
+            }
+
             addMakerRadar();
+            addMakerHole();
+
             //mMap.getUiSettings().setMyLocationButtonEnabled(false); //Tira o botao para localizar o usuario
         }
     }
@@ -85,6 +105,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        btnMarcarBuraco = (Button) findViewById(R.id.btnMarcarBuraco);
+        btnMarcarRadar = (Button) findViewById(R.id.btnMarcarRadar);
         getLocationPermission();
 
     }
@@ -158,31 +180,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
 
-    public void addMarker(LatLng latLng, String title, String snippet){
+    public void addMarker(LatLng latLng, String title, String snippet, float color){
         MarkerOptions options = new MarkerOptions();
-        options.position(latLng).title(title).snippet(snippet).draggable(true);
-        //options.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin));
+        options.position(latLng).title(title).snippet(snippet).draggable(true).visible(true);
+        options.icon(BitmapDescriptorFactory.defaultMarker(color));
 
-        Marker marker = mMap.addMarker(options);
+        mMap.addMarker(options);
     }
 
 
     public void addMakerHole(){
-        Button btnMarcarBuraco = (Button) findViewById(R.id.btnMarcarBuraco);
         btnMarcarBuraco.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                addMarker(new LatLng(-23.564224, -46.653256),"Marcador Buraco", "Marcador 1");
+                addMarker(new LatLng(location.getLatitude(), location.getLongitude()),"Marcador Buraco", "Marcador 1", BitmapDescriptorFactory.HUE_RED);
             }
         });
     }
 
     public void addMakerRadar(){
-        Button btnMarcarRadar = (Button) findViewById(R.id.btnMarcarRadar);
         btnMarcarRadar.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                addMarker(new LatLng(-23.564224, -43.653256),"Marcador Radar", "Marcador 1");
+                addMarker(new LatLng(location.getLatitude(), location.getLongitude()),"Marcador Radar", "Marcador 1", BitmapDescriptorFactory.HUE_BLUE);
             }
         });
     }
