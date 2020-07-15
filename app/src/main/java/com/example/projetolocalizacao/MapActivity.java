@@ -57,7 +57,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return;
             }
             mMap.setMyLocationEnabled(true);
-            //addMarker(new LatLng(-23.564224, -46.653256),"Marcador 1", "Marcador 1");
             addMakerHole();
             addMakerRadar();
             //mMap.getUiSettings().setMyLocationButtonEnabled(false); //Tira o botao para localizar o usuario
@@ -108,6 +107,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM);
+                            Log.d(TAG, String.valueOf(currentLocation.getLatitude()));
+                            Log.d(TAG, String.valueOf(currentLocation.getLongitude()));
 
                         }else{
                             Log.d(TAG, "onComplete: current location is null");
