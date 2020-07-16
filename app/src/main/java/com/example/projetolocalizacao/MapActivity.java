@@ -1,15 +1,12 @@
 package com.example.projetolocalizacao;
 
 import android.Manifest;
-import android.content.ClipData;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,27 +25,40 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import static android.provider.SettingsSlicesContract.KEY_LOCATION;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private LocationManager locationManager;
     private Location location;
 
-    private Button btnMarcarBuraco;
-    private Button btnMarcarRadar;
+    //buttons
+    private Button btnMarkHole;
+    private Button btnMarkRadar;
 
     private double latitude = 0d;
     private double longitude = 0d;
 
+    private static final String TAG = "MapActivity";
+
+    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
+    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
+    private static final float DEFAULT_ZOOM = 15f;
+
+    private static final String KEY_CAMERA_POSITION = "camera_position";
+    private static final String KEY_LOCATION = "location";
+
+    //vars
+    private Boolean mLocationPermissionsGranted = false;
+    private GoogleMap mMap;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+
+    // Map create
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
@@ -79,34 +89,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             addMakerRadar();
             addMakerHole();
 
-            //mMap.getUiSettings().setMyLocationButtonEnabled(false); //Tira o botao para localizar o usuario
+            //mMap.getUiSettings().setMyLocationButtonEnabled(false); // Remove the button from top, to center the map
         }
     }
 
-    private static final String TAG = "MapActivity";
 
-    private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
-    private static final float DEFAULT_ZOOM = 15f;
-
-    private static final String KEY_CAMERA_POSITION = "camera_position";
-    private static final String KEY_LOCATION = "location";
-
-
-    //vars
-    private Boolean mLocationPermissionsGranted = false;
-    private GoogleMap mMap;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    //private Marker marker;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        btnMarcarBuraco = (Button) findViewById(R.id.btnMarcarBuraco);
-        btnMarcarRadar = (Button) findViewById(R.id.btnMarcarRadar);
+        btnMarkHole = (Button) findViewById(R.id.btnMarkHole);
+        btnMarkRadar = (Button) findViewById(R.id.btnMarkRadar);
         getLocationPermission();
 
     }
@@ -190,34 +185,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     public void addMakerHole(){
-        btnMarcarBuraco.setOnClickListener(new View.OnClickListener(){
+        btnMarkHole.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                addMarker(new LatLng(location.getLatitude(), location.getLongitude()),"Marcador Buraco", "Marcador 1", BitmapDescriptorFactory.HUE_RED);
+                addMarker(new LatLng(location.getLatitude(), location.getLongitude()),"Marcador Buraco", "Marcador %f", BitmapDescriptorFactory.HUE_RED);
             }
         });
     }
 
     public void addMakerRadar(){
-        btnMarcarRadar.setOnClickListener(new View.OnClickListener(){
+        btnMarkRadar.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                addMarker(new LatLng(location.getLatitude(), location.getLongitude()),"Marcador Radar", "Marcador 1", BitmapDescriptorFactory.HUE_BLUE);
+                addMarker(new LatLng(location.getLatitude(), location.getLongitude()),"Marcador Radar", "Marcador %f", BitmapDescriptorFactory.HUE_BLUE);
             }
         });
     }
-
-    public void removeMarker(){
-        Button btnRemoveMarker = (Button) findViewById(R.id.btnRemoveMarker);
-        btnRemoveMarker.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-
-
-            }
-        });
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

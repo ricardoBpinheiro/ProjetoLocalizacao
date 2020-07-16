@@ -9,64 +9,50 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnMarcarBuraco"
+        android:layout_above="@+id/btnMarkHole"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="50dp"
         tools:context=".MapsActivity" />
 
 
     <Button
-        android:id="@+id/btnMarcarBuraco"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        android:layout_width="176dp"
+        android:id="@+id/btnMarkHole"
+        android:layout_width="166dp"
         android:layout_height="96dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="52dp"
         android:background="@drawable/buttonshape"
         android:shadowColor="#A8A8A8"
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="5"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="52dp"
-        android:text="Marcar Buraco" />
+        android:text="Marcar Buraco"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" /><![CDATA[
 
     />
 
-    <Button
-        android:id="@+id/btnRemoveMarker"
-        android:layout_width="130dp"
-        android:layout_height="70dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="39dp"
-        android:layout_marginEnd="46dp"
-        android:layout_marginBottom="18dp"
-        android:layout_toEndOf="@+id/btnMarcarBuraco"
-        android:background="@drawable/buttonshape3"
-        android:text="Remover Marcador"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp" />
+    ]]>
 
     <Button
-        android:id="@+id/btnMarcarRadar"
-        android:text="Marcar Radar"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:layout_width="134dp"
-        android:layout_height="71dp"
-        android:layout_above="@+id/btnRemoveMarker"
+        android:id="@+id/btnMarkRadar"
+        android:layout_width="176dp"
+        android:layout_height="96dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="41dp"
-        android:layout_marginBottom="16dp"
-        android:layout_toEndOf="@+id/btnMarcarBuraco"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="22dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="52dp"
+        android:layout_toEndOf="@+id/btnMarkHole"
         android:background="@drawable/buttonshape2"
         android:shadowColor="#A8A8A8"
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="5"
-        />
+        android:text="Marcar Radar"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
 
 </RelativeLayout>
