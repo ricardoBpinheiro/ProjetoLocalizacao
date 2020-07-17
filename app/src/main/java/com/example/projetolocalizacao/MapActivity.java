@@ -198,6 +198,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 addMarker(new LatLng(location.getLatitude(), location.getLongitude()),"Marcador Radar", "Marcador %f", BitmapDescriptorFactory.HUE_BLUE);
+
             }
         });
     }
